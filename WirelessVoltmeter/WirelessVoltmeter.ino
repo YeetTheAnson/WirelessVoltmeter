@@ -1,22 +1,23 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-// replace with correct ssid and pass
+// Replace with your ssid and password
 const char* ssid = "SSID";
-const char* password = "PASSWORD";
+const char* password = "Password";
 
+// Create an instance of the server
 ESP8266WebServer server(80);
 
 // convert analog to voltage 
 String getVoltage() {
-  int analogValue = analogRead(A0); 
+  int analogValue = analogRead(A0);
   float voltage = analogValue * (3.3 / 1023.0); 
   char buffer[10];
-  dtostrf(voltage, 1, 3, buffer); 
+  dtostrf(voltage, 1, 3, buffer); // convert float to string with 3 decimal places
   return String(buffer);
 }
 
-// handleroot request
+// handle the root request
 void handleRoot() {
   String voltage = getVoltage();
   String html = R"rawliteral(
@@ -108,7 +109,7 @@ void handleRoot() {
         }
 
         .numberDisplay > div:nth-last-child(3n):not(:first-child)::before {
-            content: ",";
+            content: ".";
             display: inline;
             font-size: 1em;
             opacity: 0.5;
@@ -234,6 +235,8 @@ void setup() {
   }
 
   Serial.println("Connected to WiFi");
+  Serial.println(WiFi.localIP().toString());
+
 
   server.on("/", handleRoot);
   server.on("/voltage", handleVoltage);
